@@ -42,7 +42,7 @@ int main(int argc, char const *argv[])
         compute_pi_openmp(N, 4);
     }
     clock_gettime(CLOCK_ID, &end);
-    printf("%lf,", (double) (end.tv_sec - start.tv_sec) +
+    printf("%lf\n", (double) (end.tv_sec - start.tv_sec) +
            (end.tv_nsec - start.tv_nsec)/ONE_SEC);
 
 

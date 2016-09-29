@@ -31,5 +31,8 @@ gencsv: default
 		./benchmark_clock_gettime $$i; \
 	done > result_clock_gettime.csv	
 
+plot:
+	gnuplot -e "csvFile='result_clock_gettime.csv'" plottime.gp -presist
+
 clean:
 	rm -f $(EXECUTABLE) *.o *.s result_clock_gettime.csv
