@@ -43,56 +43,59 @@ int main(int argc, char const *argv[])
     if (argc < 2) return -1;
 
     int N = atoi(argv[1]);
-    int i, loop = 25;
+    int i;
+    double samples[NUM_OF_SAMPLE];
 
     // Baseline
-    clock_gettime(CLOCK_ID, &start);
-    for(i = 0; i < loop; i++) {
+    for(i = 0; i < NUM_OF_SAMPLE; i++) {
+        clock_gettime(CLOCK_ID, &start);
         compute_pi_baseline(N);
+        clock_gettime(CLOCK_ID, &end);
+        samples[i] = (double)(end.tv_sec - start.tv_sec) +
+           (end.tv_nsec - start.tv_nsec)/ONE_SEC;
     }
-    clock_gettime(CLOCK_ID, &end);
-    printf("%lf,", (double) (end.tv_sec - start.tv_sec) +
-           (end.tv_nsec - start.tv_nsec)/ONE_SEC);
-
+    printf("%lf,", getMean(samples));
 
     // OpenMP with 2 threads
-    clock_gettime(CLOCK_ID, &start);
-    for(i = 0; i < loop; i++) {
+    for(i = 0; i < NUM_OF_SAMPLE; i++) {
+        clock_gettime(CLOCK_ID, &start);
         compute_pi_openmp(N, 2);
+        clock_gettime(CLOCK_ID, &end);
+        samples[i] = (double)(end.tv_sec - start.tv_sec) +
+           (end.tv_nsec - start.tv_nsec)/ONE_SEC;
     }
-    clock_gettime(CLOCK_ID, &end);
-    printf("%lf,", (double) (end.tv_sec - start.tv_sec) +
-           (end.tv_nsec - start.tv_nsec)/ONE_SEC);
-
+    printf("%lf,", getMean(samples));
 
     // OpenMP with 4 threads
-    clock_gettime(CLOCK_ID, &start);
-    for(i = 0; i < loop; i++) {
+    for(i = 0; i < NUM_OF_SAMPLE; i++) {
+        clock_gettime(CLOCK_ID, &start);
         compute_pi_openmp(N, 4);
+        clock_gettime(CLOCK_ID, &end);
+        samples[i] = (double)(end.tv_sec - start.tv_sec) +
+           (end.tv_nsec - start.tv_nsec)/ONE_SEC;
     }
-    clock_gettime(CLOCK_ID, &end);
-    printf("%lf\n", (double) (end.tv_sec - start.tv_sec) +
-           (end.tv_nsec - start.tv_nsec)/ONE_SEC);
+    printf("%lf,", getMean(samples));
 
-
-    // AVX SIMD
-/*    clock_gettime(CLOCK_ID, &start);
-    for(i = 0; i < loop; i++) {
+/*    // AVX SIMD
+    for(i = 0; i < NUM_OF_SAMPLE; i++) {
+        clock_gettime(CLOCK_ID, &start);
         compute_pi_avx(N);
+        clock_gettime(CLOCK_ID, &end);
+        samples[i] = (double)(end.tv_sec - start.tv_sec) +
+           (end.tv_nsec - start.tv_nsec)/ONE_SEC;
     }
-    clock_gettime(CLOCK_ID, &end);
-    printf("%lf,", (double) (end.tv_sec - start.tv_sec) +
-           (end.tv_nsec - start.tv_nsec)/ONE_SEC);
-
+    printf("%lf,", getMean(samples));
 
     // AVX SIMD + Loop unrolling
     clock_gettime(CLOCK_ID, &start);
-    for(i = 0; i < loop; i++) {
+    for(i = 0; i < NUM_OF_SAMPLE; i++) {
+        clock_gettime(CLOCK_ID, &start);
         compute_pi_avx_unroll(N);
+        clock_gettime(CLOCK_ID, &end);
+        samples[i] = (double)(end.tv_sec - start.tv_sec) +
+           (end.tv_nsec - start.tv_nsec)/ONE_SEC;
     }
-    clock_gettime(CLOCK_ID, &end);
-    printf("%lf\n", (double) (end.tv_sec - start.tv_sec) +
-           (end.tv_nsec - start.tv_nsec)/ONE_SEC);
+    printf("%lf\n", getMean(samples));
 */
     return 0;
 }
