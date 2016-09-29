@@ -1,10 +1,39 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 #include "computepi.h"
 
 #define CLOCK_ID CLOCK_MONOTONIC_RAW
 #define ONE_SEC 1000000000.0
+
+#define NUM_OF_SAMPLE 25
+#define POW2(X) ((X)*(X))
+
+/**
+ * @brief Get the mean of the mother with 95% ci from samples.
+ */
+static double getMean(double samples[NUM_OF_SAMPLE])
+{
+    double sample_mean, sample_sd;
+    int i;
+
+    /* Calculate sample mean */
+    sample_mean = 0.0;
+    for (i = 0; i < NUM_OF_SAMPLE; ++i)
+        sample_mean += samples[i];
+    sample_mean /= NUM_OF_SAMPLE;
+
+    /* Calculate sample standard deviation */
+    sample_sd = 0.0;
+    for (i = 0; i < NUM_OF_SAMPLE; ++i)
+        sample_sd += POW2(samples[i] - sample_mean);
+    sample_sd /= (NUM_OF_SAMPLE - 1);
+    sample_sd = sqrt(sample_sd);
+
+    /* Compute mother mean */
+    return sample_mean - (2.06 * sample_sd / sqrt(NUM_OF_SAMPLE));
+}
 
 int main(int argc, char const *argv[])
 {
