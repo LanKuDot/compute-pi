@@ -12,6 +12,7 @@ default: computepi.o
 #	$(CC) $(CFLAGS) computepi.o time_test.c -DAVX -o time_test_avx -lm
 #	$(CC) $(CFLAGS) computepi.o time_test.c -DAVXUNROLL -o time_test_avxunroll -lm
 	$(CC) $(CFLAGS) computepi.o benchmark_clock_gettime.c -o benchmark_clock_gettime -lm
+	$(CC) $(CFLAGS) computepi.o error_rate.c -o error_rate -lm
 
 .PHONY: clean default
 
@@ -30,9 +31,14 @@ gencsv: default
 		printf "%d," $$i;\
 		./benchmark_clock_gettime $$i; \
 	done > result_clock_gettime.csv	
+	for i in `seq 100 10000 1000000`; do \
+		printf "%d," $$i;\
+		./error_rate $$i; \
+	done > error_rate.csv
 
 plot:
 	gnuplot -e "csvFile='result_clock_gettime.csv'" plottime.gp -presist
+	gnuplot -e "csvFile='error_rate.csv'" plotError_log.gp -presist
 
 clean:
 	rm -f $(EXECUTABLE) *.o *.s result_clock_gettime.csv

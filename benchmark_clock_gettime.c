@@ -74,7 +74,7 @@ int main(int argc, char const *argv[])
         samples[i] = (double)(end.tv_sec - start.tv_sec) +
            (end.tv_nsec - start.tv_nsec)/ONE_SEC;
     }
-    printf("%lf,", getMean(samples));
+    printf("%lf\n", getMean(samples));
 
 /*    // AVX SIMD
     for(i = 0; i < NUM_OF_SAMPLE; i++) {
